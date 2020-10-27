@@ -150,18 +150,23 @@ We need to modify our output and output frequency and some of the namelist param
 
 #### Modify the `nudging` namelist configuration
 
+These namelist changes apply added heating, set the forcing directory, and the file template.
+Heating is applied 4 times per day.  
+If CESM is initialized on 0005-01-01, then the first and only forcing file read is addheat.0005-01-01-21600.nc
+
 `Nudge_Model = .true.`
 
-`Nudge_Path = ‘/glade/scratch/swenson/archive/forcing/’`
+`Nudge_Path = ‘/glade/scratch/swenson/archive/forcing/`
 
-`Nudge_File_Template = ‘TEST1.cam.h3. %y-%m-%d-%s.nc’`
+`Nudge_File_Template = ‘addheat.%y-%m-%d-%s.nc`
 
 `Nudge_Times_Per_Day=4`
 
 `Model_Times_Per_Day=48`
 
 
-Explain these.
+These namelist changes apply a tendency to temperture over a specified domain.
+We do not change the other variables (U,V,Q,PS)
 
 `Nudge_Uprof = 0`
 
@@ -183,23 +188,40 @@ Explain these.
 
 `Nudge_PScoef = 0`
 
-Explain these.
 
-Now specify that we only want to apply this during the period from Feb 1, 1990 to Feb 28, 1990
+These namelist changes tell the model we are applying a tendency during the 3-month period from 0005-01-01 to 0005-03-31.  We are using the hybrid run initialized on 0005-01-01 from our previous B1850 control simulation (the one you used in Assignment #2). 
 
-`Nudge_Beg_Year = 1990`
+If your run is not available, you can use Dr. Pegion's control run, called test1.
 
-`Nudge_Beg_Month = 2`
+`Nudge_Beg_Year = 0005`
+
+`Nudge_Beg_Month = 1`
 
 `Nudge_Beg_Day  = 1`
 
-`Nudge_End_Year = 1990`
+`Nudge_End_Year = 0005`
 
-`Nudge_End_Month = 2`
+`Nudge_End_Month = 3`
 
-`Nudge_End_Day = 28`
+`Nudge_End_Day = 31`
 
-Explain
+This set of namelist parameters applies the tendency *only* over a latitude wideth of 40 degress centered at 0 deg and longitude width of 230deg centered at 165deg E (tropical Indo-Pacific).
+
+At the boundaries of this region, ther is decay with an e-folding scale of 1 deg.
+
+`Nudge_Hwin_lat0     = 0.0`
+
+`Nudge_Hwin_latWidth = 40.0`
+
+`Nudge_Hwin_latDelta = 1.0`
+
+`Nudge_Hwin_lon0     = 165.0`
+
+`Nudge_Hwin_lonWidth = 230.0`
+
+`Nudge_Hwin_lonDelta = 1.0`
+
+
 
 You can double check that you didn't have any major mistakes in your `user_nl_cam` file by running `preview_namelists`
 
@@ -212,9 +234,9 @@ If you get an error, check for typos or for quotes if you cut and pasted. Rememb
 
 ### Understanding the Added Heating Forcing File
 
-The forcing file we specified is: `/glade/scratch/swenson/archive/forcing/TEST1.cam.h3.%y-%m-%d-%s.nc`, where `%y-%m-%d-%s` refers to year, month, day, hour, seconds.
-
 The model expects a netcdf file with U,V,T,Q, and PS on the model grid.
+
+The forcing file we specified is: `/glade/scratch/swenson/archive/forcing/addheat.0005-01-01-21600.nc`
 
 We are forcing `T`, so let's look to see what the T forcing looks like for a specific date.
 
@@ -226,17 +248,25 @@ ncview /glade/scratch/swenson/archive/forcing/TEST1.cam.h3.1990-02-01-21600.nc
 
 ![Forcing](../fig/Picture1.png)
 
-Note: I looked at this in ncview and could not reproduce this.
+## Step 3: Setup your model initialization
 
-## Step 3: Set the Length of your run
+* Use the initial conditiosn from 0005-01-01 branchign off from your previous B1850 control simulation (the one you used in assignment #2 (or Dr. Pegion, called test1)
 
 ~~~
-xmlchange STOP_N=1
+cp /glade/scratch/USERNAME/archive/CASENAME/rest/0005-01-01-00000/* /glade/scratch/USERNAME/NEWCASENAME/run/
+~~~
+{: .language-bash}
+
+
+## Step 4: Set the Length of your run for 3-months
+
+~~~
+xmlchange STOP_N=3
 xmlchange STOP_OPTION=nmonths
 ~~~
 {: .language-bash}
 
-## Step 4:  Build and Run your Case
+## Step 5:  Build and Run your Case
 
 ~~~
 qcmd -- ./case.build
@@ -244,8 +274,15 @@ qcmd -- ./case.build
 ~~~
 {: .language-bash}
 
-### What do we look for to see what happened?
+### Create a matching Control Run without the added heating
 
-Can we point the students to some sample output and give them some direction on how to look at the impact of the added heating?
+* Setup the same output namelist changes
+* Setup the initial conditions (Step 4) in the same way
+
+### What did the added heating do?
+
+Compare the control run and the added heating run by making a difference plot of 850-50 hPa heating and 200 hPa geopotential height.
+
+![difference](diff.png]
 
 
