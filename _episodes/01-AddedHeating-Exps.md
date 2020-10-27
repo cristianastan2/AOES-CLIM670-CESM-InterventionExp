@@ -283,6 +283,6 @@ qcmd -- ./case.build
 
 Compare the control run and the added heating run by making a difference plot of 850-50 hPa heating and 200 hPa geopotential height.
 
-![difference](diff.png]
+![difference](diff.png)]
 
 
