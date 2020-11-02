@@ -79,3 +79,6 @@ You may send me the figure itself or the location of your figure.
  
 Make sure it is properly labelled (units, lats/lons, contours, title) and is a `single` figure (this will involve using `contourf` once and `contour` twice (maybe more times if you are matching Dr. Swenson's colors exactly).
 
+### When is it Due?
+
+Nov 17
