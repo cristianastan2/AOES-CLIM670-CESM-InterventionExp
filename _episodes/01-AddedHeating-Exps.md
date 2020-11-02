@@ -54,234 +54,95 @@ This nudging is preferrable to all the sudden imposing something in the model be
 
 We will use this nudging functionality in the model to add a constant 3D heating to the T variable.  We will need to change the `nudging.F90` source code for this experiment.
 
-### Let's create and setup our case
+## Create, Setup and Configure Using a Script
 
-Remember to first go to your `/glade/work/USERNAME/cesm2.1.1/cime/scripts/` directory to run `create_newcase`.
+We will setup our case using a Unix shell script.  This script will execute all the same commande that we typically perform my hand.  A script is a good method to keep track of what we did to setup our experiment and make sure we can reproduce it.  
 
-~~~
-$ ./create_newcase --case ~/cases/addheat --res f19_g17 --compset B1850 --project UGMU0032
-$ cd ~/cases/addheat
-$ ./case.setup
-~~~
-{: .language-bash}
+First, we will make a place in our home directory for experiment scripts and then copy the script to that location.
 
-
-### Step 1: Modify the Source Code
-
-Now we need to modify the nudging source code so that it will add a constant heating to T.
-
-> ## Modifying source code
-> 
-> Where do we put source code modifications for our case?
->
-> 
-> a) user_nl_cam
->
-> b) /glade/scratch/USERNAME/CASE/run
->
-> c) $CASEROOT
->
-> d) $CASEROOT/SourceMods/src.cam 
->
->> ## Solution
->>
->> a) not correct. this is where namelist changes go
->>
->> b) not correct. this is the run directory for your case.  we don't make changes here.
->>
->> c) not correct. 
->>
->> d) Correct! We will copy a new `nudging.F90` file to our `SourceMods/src.cam` directory to make changes.
->> 
-> {: .solution}
-{: .challenge}
-
-
-We are going to use a new `nudging.F90` file created by Dr. Swenson which has the code changes for applying an constant added heating to the atmospheric model. 
-
-Copy Dr. Swenson's file: `/glade/u/home/swenson/run_CESM2.1.1/SourceMods/nudging.F90-ADDCONST` to our `SourceMods/src.cam` directory. Call the new file `nudging.F90`
+From your home directory:
 
 ~~~
-$ cp /glade/u/home/swenson/run_CESM2.1.1/SourceMods/nudging.F90-ADDCONST ./SourceMods/src.cam/nudging.F90
-~~~
-{: .language-bash}
-
-To see how this nudging.F90 code is different than the origingal, use `diff` command.
-
-~~~
-diff SourceMods/src.cam/nudging.F90 /glade/work/kpegion/cesm2.1.1/components/cam/src/physics/cam/nudging.F90 | more
-~~~
-{: .language-bash}
-
-Need to explain differences.
-
-
-## Step 2: Modify the namelist
-
-We need to modify our output and output frequency and some of the namelist parameters associated with the added heating configuration.  These are modified in the namelist `user_nl_cam`.
-
-#### Modify output and output frequency:
-
-`avgflag_pertape = ‘A’,‘I’,‘I’`
-
-`nhtfrq = 0,-24,-6`
-
-`mfilt = 1,1,1`
-
-`fincl2 = ‘U’,‘V’,‘OMEGA’,‘Z3’,‘T’,‘Q’,‘PRECT’,‘FLUT’,‘TMQ’,‘PS’,‘PHIS’`
-
-`fincl3 = ‘DTCOND’,‘QRS’,‘QRL’,‘DTV’,‘Nudge_T’,‘PS’,‘PHIS’`
-
-> ## Output Frequency
-> 
-> What does `nhtfrq=0.-24,-6` mean?
->
-> What does `mfilt=1,1,1` mean?
->
-> What do `fincl2` and `fincl3` specify?
->
-> `avgflag_pertape = ‘A’,‘I’,‘I’` indicates how to average for each of the history files. 
->
->  `A`=average value over the `nhtfrq`
->
->  `I`=instantaneous value at the `nhtfrq`
->
-{: .challenge}
-
-#### Modify the `nudging` namelist configuration
-
-These namelist changes apply added heating, set the forcing directory, and the file template.
-Heating is applied 4 times per day.  
-If CESM is initialized on 0005-01-01, then the first and only forcing file read is addheat.0005-01-01-21600.nc
-
-`Nudge_Model = .true.`
-
-`Nudge_Path = ‘/glade/scratch/swenson/archive/forcing/`
-
-`Nudge_File_Template = ‘addheat.%y-%m-%d-%s.nc`
-
-`Nudge_Times_Per_Day=4`
-
-`Model_Times_Per_Day=48`
-
-
-These namelist changes apply a tendency to temperture over a specified domain.
-We do not change the other variables (U,V,Q,PS)
-
-`Nudge_Uprof = 0`
-
-`Nudge_Ucoef = 0`
-
-`Nudge_Vprof = 0`
-
-`Nudge_Vcoef = 0`
-
-`Nudge_Tprof = 2`
-
-`Nudge_Tcoef = 1`
-
-`Nudge_Qprof = 0`
-
-`Nudge_Qcoef = 0`
-
-`Nudge_PSprof = 0`
-
-`Nudge_PScoef = 0`
-
-
-These namelist changes tell the model we are applying a tendency during the 3-month period from 0005-01-01 to 0005-03-31.  We are using the hybrid run initialized on 0005-01-01 from our previous B1850 control simulation (the one you used in Assignment #2). 
-
-If your run is not available, you can use Dr. Pegion's control run, called test1.
-
-`Nudge_Beg_Year = 0005`
-
-`Nudge_Beg_Month = 1`
-
-`Nudge_Beg_Day  = 1`
-
-`Nudge_End_Year = 0005`
-
-`Nudge_End_Month = 3`
-
-`Nudge_End_Day = 31`
-
-This set of namelist parameters applies the tendency *only* over a latitude wideth of 40 degress centered at 0 deg and longitude width of 230deg centered at 165deg E (tropical Indo-Pacific).
-
-At the boundaries of this region, ther is decay with an e-folding scale of 1 deg.
-
-`Nudge_Hwin_lat0     = 0.0`
-
-`Nudge_Hwin_latWidth = 40.0`
-
-`Nudge_Hwin_latDelta = 1.0`
-
-`Nudge_Hwin_lon0     = 165.0`
-
-`Nudge_Hwin_lonWidth = 230.0`
-
-`Nudge_Hwin_lonDelta = 1.0`
-
-
-
-You can double check that you didn't have any major mistakes in your `user_nl_cam` file by running `preview_namelists`
-
-~~~
-$ ./preview_namelists
-~~~
-{: .language-bash}
-
-If you get an error, check for typos or for quotes if you cut and pasted. Remember sometimes quotes don't cut and paste correctly!
-
-### Understanding the Added Heating Forcing File
-
-The model expects a netcdf file with U,V,T,Q, and PS on the model grid.
-
-The forcing file we specified is: `/glade/scratch/swenson/archive/forcing/addheat.0005-01-01-21600.nc`
-
-We are forcing `T`, so let's look to see what the T forcing looks like for a specific date.
-
-~~~
-module load ncview
-ncview /glade/scratch/swenson/archive/forcing/TEST1.cam.h3.1990-02-01-21600.nc
-~~~
-{: .language-bash}
-
-![Forcing](../fig/Picture1.png)
-
-## Step 3: Setup your model initialization
-
-* Use the initial conditiosn from 0005-01-01 branchign off from your previous B1850 control simulation (the one you used in assignment #2 (or Dr. Pegion, called test1)
-
-~~~
-cp /glade/scratch/USERNAME/archive/CASENAME/rest/0005-01-01-00000/* /glade/scratch/USERNAME/NEWCASENAME/run/
+$ mkdir cases_scripts
+$ cd cases_scripts
+$ cp ~kpegion/cases_scripts/addheat.csh . 
 ~~~
 {: .language-bash}
 
 
-## Step 4: Set the Length of your run for 3-months
+Next we will take a look at the script and see what it does.
 
 ~~~
-xmlchange STOP_N=3
-xmlchange STOP_OPTION=nmonths
-~~~
-{: .language-bash}
-
-## Step 5:  Build and Run your Case
-
-~~~
-qcmd -- ./case.build
-./case.submit
+$ vi addheat.csh
 ~~~
 {: .language-bash}
 
-### Create a matching Control Run without the added heating
+### The set commands
 
-* Setup the same output namelist changes
-* Setup the initial conditions (Step 4) in the same way
+At the top, all the `set commands` set variables for the script to use.  You will need to set these correctly for your run, specifically, set the following:
 
-### What did the added heating do?
+`refcase`: set this to the case you used for Assignment #2. This is a B1850 Pre-industrial control simulation and we will branch from this case.
 
-Compare the control run and the added heating run by making a difference plot of 850-50 hPa heating and 200 hPa geopotential height.
+`expname`: set this to the case name you want to use for your added heating experiment
 
-![Difference](../fig/diff.png)
+The following ware set correctly, but I want you to know what they mean incase you wish to use this script for something else and need to change it:
 
+`project`: make sure the project number is set to the correct one.
+
+`model`: Make sure this is set to the version of the model you wish to use, it should be your `/glade/work/USERNAME/cesm2.1.1.  The variables $USER will resolve to your username.
+
+`caseroot`: The path to your case
+
+### The `rm` commands
+
+This deletes the CASEROOT, so you are guaranteed to be starting fresh with you new case.
+The second `rm` command deletes your `/glade/scratch/USERNAME/CASENAME`.  Remember the `rm` command deletes without question, so be careful here. 
+
+
+### Create and setup the newcase
+
+The next few lines run the `create_newcase` and `case.setup` scripts.
+
+### Modify Source code
+
+The next line copies the new source code for the added heating experiment to the `SourceMods` directory fo ryour new case.
+
+### xmlchange commands
+
+All the xmlchange commands setup and configure your case
+
+### Modify the namelist
+
+The next set of lines labelled `# Variables to output` modifies the `user_nl_cam` namelist to change the output frequency for the atmosphere and set the namelist to configure the options for the added heating (all the `Nudge` options)
+
+
+### Setup your initial conditions
+
+Since `GET_REFCASE` is set to `false`, the user needs to copy the initial conditions to the run directory.  The next line labelled `# Initial conditions for Branch run` do that for you.
+
+### Build and Submit your run
+
+The last few lines of the code execute the build and submit scripts.
+
+## How to run the script
+
+Make the script executable.
+
+~~~
+$ chmod +x addheat.csh
+~~~
+{: .language-bash}
+
+Run the script
+
+~~~
+$ ./addheat.csh
+~~~
+{: .language-bash}
+
+It will take a few minutes to run since it has to go through all the steps we normally do by hand, including the build step.  Once it is complete, your job will be submitted to the queue and you can take a look using 
+
+~~~
+$ qstat -u USERNAME
+~~~
+{: .language-bash}
