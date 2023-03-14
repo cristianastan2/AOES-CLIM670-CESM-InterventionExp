@@ -1,5 +1,5 @@
 ---
-title: "Assignment #4"
+title: "Assignment #5"
 questions:
 - "Added Heating Experiment"
 objectives:
@@ -11,7 +11,7 @@ keypoints:
 
 ### Perform the added heating experiment
 
-The instructions are [here](https://kpegion.github.io/AOES-CLIM-CESM-InterventionExps/01-AddedHeating-Exps/index.html)
+The instructions are [here](https://criistianastan2.github.io/AOES-CLIM670-CESM-InterventionExp/01-AddedHeating-Exps/index.html)
 
 ### Perform the control experiment
 
@@ -19,7 +19,7 @@ Following a similar procedure as the added heating experiment, perform the contr
 
 A control expeirment means that everything is exactly the same except the thing you changed, in this case, the added heating.  This means the two can be cleanly compared to see the impact of added heating.
 
-Use the script called `addheat.control.csh` located in `~kpegion/case_scripts`.
+Use the script called `addheat.control.csh` located in `~cstan/scripts`.
 
 ### Make a plot showing the impact of the added heating 
 
@@ -33,7 +33,7 @@ You will nead to use the history files, not postprocessed time series files for 
 As an example, I provide code for reading the `h1` history files from my added heating experiment below:
 
 ~~~
-path='/glade/scratch/kpegion/archive/'
+path='/glade/scratch/cstan/archive/'
 exp_ah='addheat2'
 fstub_h1='.cam.h1.*.nc'
 
@@ -81,4 +81,4 @@ Make sure it is properly labelled (units, lats/lons, contours, title) and is a `
 
 ### When is it Due?
 
-Nov 17
+April 24
