@@ -9,7 +9,7 @@ keypoints:
 
 ## Added Heating
 
-The version of CESM that we are using (CESM 2.1.1) has code and a namelist configuration in the atmosphere that performs atmospheric nudging (also sometimes called relaxation) for zonal wind (U), meridional wind (V), temperature (T), specific humidity (Q), and pressure (PS).  We will use this functionality, modified by Dr. Swenson, to add a constant, 3D, idealized heating to temperature (T).
+The version of CESM that we are using (CESM 2.1.3) has code and a namelist configuration in the atmosphere that performs atmospheric nudging (also sometimes called relaxation) for zonal wind (U), meridional wind (V), temperature (T), specific humidity (Q), and pressure (PS).  We will use this functionality, modified by Dr. Swenson, to add a constant, 3D, idealized heating to temperature (T).
 
 ## Create, Setup and Configure Using a Script
 
@@ -24,7 +24,7 @@ From your home directory:
 ~~~
 $ mkdir cases_scripts
 $ cd cases_scripts
-$ cp ~kpegion/cases_scripts/addheat.csh . 
+$ cp ~cstan/scripts/addheat.csh . 
 ~~~
 {: .language-bash}
 
@@ -40,7 +40,7 @@ $ vi addheat.csh
 
 At the top, the `set` set variables for the script to use.  You will need to set these correctly for your run, specifically, set the following:
 
-`refcase`: set this to the case you used for Assignment #2. This is a B1850 Pre-industrial control simulation and we will branch from this case for this experiment.
+`refcase`: set this to the case you used for Assignment #3. This is a B1850 Pre-industrial control simulation and we will branch from this case for this experiment.
 
 `expname`: set this to the case name you want to use for your added heating experiment
 
@@ -48,7 +48,7 @@ The following are already set correctly, but I want you to know what they mean i
 
 `project`: make sure the project number is set to the correct one.
 
-`model`: Make sure this is set to the version of the model you wish to use, it should be your `/glade/work/USERNAME/cesm2.1.1`.  The variables $USER will resolve to your username.
+`model`: Make sure this is set to the version of the model you wish to use, it should be your `/glade/work/USERNAME/cesm2.1.3`.  The variables $USER will resolve to your username.
 
 `caseroot`: The path to your case
 
