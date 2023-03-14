@@ -75,7 +75,7 @@ From the added heating experiment only, calculate the 850hPa-50hPa average of th
 
 ### How to turn it in?
 
-You may send me the figure itself or the location of your figure.
+Upload your figure to BB.
  
 Make sure it is properly labelled (units, lats/lons, contours, title) and is a `single` figure (this will involve using `contourf` once and `contour` twice (maybe more times if you are matching Dr. Swenson's colors exactly).
 
