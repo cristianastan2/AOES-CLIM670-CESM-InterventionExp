@@ -24,7 +24,7 @@ From your home directory:
 ~~~
 $ mkdir cases_scripts
 $ cd cases_scripts
-$ cp ~cstan/scripts/addheat.csh . 
+$ cp ~cstan/clim670/nudging/addheat.csh . 
 ~~~
 {: .language-bash}
 
