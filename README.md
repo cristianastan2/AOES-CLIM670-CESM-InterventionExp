@@ -1,6 +1,6 @@
 # CLIM Class Lessons
 
-This repository generates lessons used in Kathy Pegion's open source classes in the Department of Atmospheric, Oceanic, and Earth Sciences at George Mason University. 
+This repository generates lessons used in Cristiana Stan's open source classes in the Department of Atmospheric, Oceanic, and Earth Sciences at George Mason University. It was originally developed by Kathy Pegion. 
 
 ## Contributing
 
@@ -19,7 +19,7 @@ Look for the tag ![good_first_issue](https://img.shields.io/badge/-good%20first%
 
 Current maintainers of this lesson are 
 
-* Kathy Pegion
+* Kathy Pegion, Cristiana Stan
 
 
 ## Authors
