@@ -11,7 +11,7 @@ keypoints:
 
 ### Perform the added heating experiment
 
-The instructions are [here](https://criistianastan2.github.io/AOES-CLIM670-CESM-InterventionExp/01-AddedHeating-Exps/index.html)
+The instructions are [here](https://cristianastan2.github.io/AOES-CLIM670-CESM-InterventionExp/01-AddedHeating-Exps/index.html)
 
 ### Perform the control experiment
 
@@ -34,7 +34,7 @@ As an example, I provide code for reading the `h1` history files from my added h
 
 ~~~
 path='/glade/scratch/cstan/archive/'
-exp_ah='addheat2'
+exp_ah='addheat4'
 fstub_h1='.cam.h1.*.nc'
 
 ds_ah_h1=xr.open_mfdataset(path+exp_ah+'/atm/hist/'+exp_ah+fstub_h1,
